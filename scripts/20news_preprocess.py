@@ -24,7 +24,7 @@ plt.figure(figsize=(17,5))
 plt.semilogy(wc, '.')
 
 def remove_encoded_images(dataset, freq=1e3):
-    widx = train.vocab.index('ax')
+    widx = np.where(train.vocab=='ax')[0][0]
     wc = train.data[:,widx].toarray().squeeze()
     idx = np.argwhere(wc < freq).squeeze()
     dataset.keep_documents(idx)

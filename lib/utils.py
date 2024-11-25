@@ -15,7 +15,7 @@ class TextDataset(object):
         # TODO: stemming, lemmatisation
         for i,doc in enumerate(self.documents):
             # Digits.
-            if num is 'spell':
+            if num == 'spell':
                 doc = doc.replace('0', ' zero ')
                 doc = doc.replace('1', ' one ')
                 doc = doc.replace('2', ' two ')
@@ -26,10 +26,10 @@ class TextDataset(object):
                 doc = doc.replace('7', ' seven ')
                 doc = doc.replace('8', ' eight ')
                 doc = doc.replace('9', ' nine ')
-            elif num is 'substitute':
+            elif num == 'substitute':
                 # All numbers are equal. Useful for embedding (countable words) ?
                 doc = re.sub('(\\d+)', ' NUM ', doc)
-            elif num is 'remove':
+            elif num == 'remove':
                 # Numbers are uninformative (they are all over the place). Useful for bag-of-words ?
                 # But maybe some kind of documents contain more numbers, e.g. finance.
                 # Some documents are indeed full of numbers. At least in 20NEWS.
@@ -45,7 +45,7 @@ class TextDataset(object):
         # TODO: count or tf-idf. Or in normalize ?
         vectorizer = sklearn.feature_extraction.text.CountVectorizer(**params)
         self.data = vectorizer.fit_transform(self.documents)
-        self.vocab = vectorizer.get_feature_names()
+        self.vocab = vectorizer.get_feature_names_out()
         assert len(self.vocab) == self.data.shape[1]
     
     def data_info(self, show_classes=False):
@@ -93,13 +93,13 @@ class TextDataset(object):
 
     def remove_short_documents(self, nwords, vocab='selected'):
         """Remove a document if it contains less than nwords."""
-        if vocab is 'selected':
+        if vocab == 'selected':
             # Word count with selected vocabulary.
             wc = self.data.sum(axis=1)
             wc = np.squeeze(np.asarray(wc))
-        elif vocab is 'full':
+        elif vocab == 'full':
             # Word count with full vocabulary.
-            wc = np.empty(len(self.documents), dtype=np.int)
+            wc = np.empty(len(self.documents), dtype=int)
             for i,doc in enumerate(self.documents):
                 wc[i] = len(doc.split())
         idx = np.argwhere(wc >= nwords).squeeze()
