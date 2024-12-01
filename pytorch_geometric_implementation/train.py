@@ -1,6 +1,6 @@
 import torch
 from torch_geometric.data import DataLoader
-from models import GraphChebNet
+from models import GraphChebNet, GraphChebNetWithCoarsening, BaselineMLP
 
 
 def train(model, loader, optimizer, criterion, device):
@@ -47,10 +47,11 @@ if __name__ == "__main__":
     hidden_channels = 64
     num_classes = dataset.num_classes
     learning_rate = 0.0005
-    num_epochs = 600
+    num_epochs = 300
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-    model = GraphChebNet(num_node_features, hidden_channels, num_classes, K=3).to(device)
+    model = GraphChebNetWithCoarsening(num_node_features, hidden_channels, num_classes, K=7).to(device)
+    #model = BaselineMLP(num_node_features, hidden_channels, num_classes).to(device)
     criterion = torch.nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 
